@@ -30,7 +30,7 @@ package body Hidden_Subgroup_Problem is
       Oracle : Simon_Oracle_Function) return Bit_Mask is
       
       Max_Equations : constant := 16;
-      Equations     : array (1 .. Max_Equations) of Bit_Mask := (others => 0);
+      Equations     : array (1 .. Max_Equations) of Bit_Mask := [others => 0];
       Eq_Count      : Natural := 0;
       
       -- Helper: bitwise dot product mod 2
@@ -49,7 +49,7 @@ package body Hidden_Subgroup_Problem is
 
       -- Gaussian elimination over GF(2) to find non-zero kernel element s
       function Gaussian_Elimination (Eqs : Bit_Mask_Array; Bits : Positive) return Bit_Mask is
-         Matrix : array (1 .. Eqs'Length) of Bit_Mask := (others => 0);
+         Matrix : array (1 .. Eqs'Length) of Bit_Mask := [others => 0];
          M_Len  : Natural := 0;
          Mask   : Bit_Mask;
       begin
@@ -195,7 +195,7 @@ package body Hidden_Subgroup_Problem is
 
       Gen := N / Group_Element(Period);
 
-      return Result : Element_Array := (1 => Gen);
+      return Result : Element_Array := [1 => Gen];
    end Solve_Abelian_HSP;
 
    ---------------------------------------------------------------------------
@@ -244,5 +244,34 @@ package body Hidden_Subgroup_Problem is
       end loop;
       return True;
    end Evaluate_Character_Orthogonality;
+
+   ---------------------------------------------------------------------------
+   -- Test Oracles Implementation
+   ---------------------------------------------------------------------------
+   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask is
+   begin
+      return Bit_Mask'Min(X, X xor 3);
+   end Simon_Oracle_Sample_1;
+
+   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask is
+   begin
+      return Bit_Mask'Min(X, X xor 5);
+   end Simon_Oracle_Sample_2;
+
+   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element is
+   begin
+      return X mod 3;
+   end Period_Oracle_Sample_3;
+
+   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element is
+   begin
+      return X mod 4;
+   end Period_Oracle_Sample_4;
+
+   function Constant_Oracle (X : Group_Element) return Group_Element is
+      pragma Unreferenced (X);
+   begin
+      return 42;
+   end Constant_Oracle;
 
 end Hidden_Subgroup_Problem;
