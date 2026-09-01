@@ -1,44 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Hidden_Subgroup_Problem; use Hidden_Subgroup_Problem;
 
-package Test_Oracles is
-   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask;
-   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask;
-   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element;
-   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element;
-   function Constant_Oracle (X : Group_Element) return Group_Element;
-end Test_Oracles;
-
-package body Test_Oracles is
-   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask is
-   begin
-      return Bit_Mask'Min(X, X xor 3);
-   end Simon_Oracle_Sample_1;
-
-   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask is
-   begin
-      return Bit_Mask'Min(X, X xor 5);
-   end Simon_Oracle_Sample_2;
-
-   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element is
-   begin
-      return X mod 3;
-   end Period_Oracle_Sample_3;
-
-   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element is
-   begin
-      return X mod 4;
-   end Period_Oracle_Sample_4;
-
-   function Constant_Oracle (X : Group_Element) return Group_Element is
-      pragma Unreferenced (X);
-   begin
-      return 42;
-   end Constant_Oracle;
-end Test_Oracles;
-
-with Test_Oracles; use Test_Oracles;
-
 procedure Tests is
    Pass_Count : Natural := 0;
    Fail_Count : Natural := 0;
