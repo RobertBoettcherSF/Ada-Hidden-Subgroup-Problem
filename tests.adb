@@ -48,9 +48,9 @@ begin
    begin
       Check ("3.1 Period is positive", P > 0);
       Check ("3.2 Period equals 3", P = 3);
-      pragma Warnings (Off);
+      pragma Warnings (Off, "condition can only be");
       Check ("3.3 Period divides group size 9", 9 mod Group_Element(P) = 0);
-      pragma Warnings (On);
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 4 — Period Finding (Period 4 in Z_12)
@@ -60,9 +60,9 @@ begin
    begin
       Check ("4.1 Period is positive for Z_12", P > 0);
       Check ("4.2 Period equals 4", P = 4);
-      pragma Warnings (Off);
+      pragma Warnings (Off, "condition can only be");
       Check ("4.3 Period divides group size 12", 12 mod Group_Element(P) = 0);
-      pragma Warnings (On);
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 5 — General Abelian HSP (Period 3 in Z_9)
