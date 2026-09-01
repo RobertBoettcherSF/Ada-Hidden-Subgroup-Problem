@@ -136,7 +136,7 @@ package body Hidden_Subgroup_Problem is
          begin
             return Gaussian_Elimination(Sub_Slice, N_Bits);
          end;
-      end loop;
+      end if;
 
       raise Subgroup_Not_Found;
    end Solve_Simons_Problem;
