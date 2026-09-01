@@ -48,9 +48,9 @@ begin
    begin
       Check ("3.1 Period is positive", P > 0);
       Check ("3.2 Period equals 3", P = 3);
-      pragma Warnings (Off, "condition can only be False");
+      pragma Warnings (Off, "condition can only be");
       Check ("3.3 Period divides group size 9", 9 mod Group_Element(P) = 0);
-      pragma Warnings (On, "condition can only be False");
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 4 — Period Finding (Period 4 in Z_12)
@@ -60,9 +60,9 @@ begin
    begin
       Check ("4.1 Period is positive for Z_12", P > 0);
       Check ("4.2 Period equals 4", P = 4);
-      pragma Warnings (Off, "condition can only be False");
+      pragma Warnings (Off, "condition can only be");
       Check ("4.3 Period divides group size 12", 12 mod Group_Element(P) = 0);
-      pragma Warnings (On, "condition can only be False");
+      pragma Warnings (On, "condition can only be");
    end;
 
    -- TEST 5 — General Abelian HSP (Period 3 in Z_9)
@@ -125,7 +125,7 @@ begin
       Is_Ortho : constant Boolean := Evaluate_Character_Orthogonality (9, 2, Subgroup);
    begin
       Check ("10.1 Character orthogonality returns Boolean for invalid", True);
-      Check ("10.2 Non-orthogonal character correctly registered", not Is_Ortho);
+      Check ("10.2 Non-orthogonal character correctly rejected", not Is_Ortho);
       Check ("10.3 Character evaluation correctness confirmed", True);
    end;
 
@@ -158,7 +158,7 @@ begin
    Ex_Caught := False;
    begin
       declare
-         P : constantPeriod_Type := Solve_Period_Finding (5, Constant_Oracle'Access);
+         P : constant Period_Type := Solve_Period_Finding (5, Constant_Oracle'Access);
          pragma Unreferenced (P);
       begin
          null;
