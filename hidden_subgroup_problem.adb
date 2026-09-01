@@ -213,18 +213,17 @@ package body Hidden_Subgroup_Problem is
       for X in 0 .. Group_Element(N - 1) loop
          declare
             Base_Val : constant Group_Element := Oracle(X);
+         begin
+            for I in Subgroup'Range loop
+               declare
+                  Shifted : constant Group_Element := (X + Subgroup(I)) mod N;
+               begin
+                  if Oracle(Shifted) /= Base_Val then
+                     return False;
+                  end if;
+               end;
+            end loop;
          end;
-         pragma Warnings (Off, "condition can only be False");
-         for I in Subgroup'Range loop
-            declare
-               Shifted : constant Group_Element := (X + Subgroup(I)) mod N;
-            begin
-               if Oracle(Shifted) /= Oracle(X) then
-                  return False;
-               end if;
-            end;
-         end loop;
-         pragma Warnings (On, "condition can only be False");
       end loop;
 
       return True;
