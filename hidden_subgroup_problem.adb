@@ -30,7 +30,7 @@ package body Hidden_Subgroup_Problem is
       Oracle : Simon_Oracle_Function) return Bit_Mask is
       
       Max_Equations : constant := 16;
-      Equations     : array (1 .. Max_Equations) of Bit_Mask := [others => 0];
+      Equations     : Bit_Mask_Array (1 .. Max_Equations) := [others => 0];
       Eq_Count      : Natural := 0;
       
       -- Helper: bitwise dot product mod 2
@@ -49,7 +49,7 @@ package body Hidden_Subgroup_Problem is
 
       -- Gaussian elimination over GF(2) to find non-zero kernel element s
       function Gaussian_Elimination (Eqs : Bit_Mask_Array; Bits : Positive) return Bit_Mask is
-         Matrix : array (1 .. Eqs'Length) of Bit_Mask := [others => 0];
+         Matrix : Bit_Mask_Array (1 .. Eqs'Length) := [others => 0];
          M_Len  : Natural := 0;
          Mask   : Bit_Mask;
       begin
@@ -106,7 +106,7 @@ package body Hidden_Subgroup_Problem is
             Y1 : constant Bit_Mask := Oracle(I);
             Y2 : constant Bit_Mask := Oracle(0);
          begin
-            if Y1 = Y2 and I /= 0 then
+            if Y1 = Y2 and then I /= 0 then
                return I;
             end if;
          end;
@@ -213,17 +213,18 @@ package body Hidden_Subgroup_Problem is
       for X in 0 .. Group_Element(N - 1) loop
          declare
             Base_Val : constant Group_Element := Oracle(X);
-         begin
-            for I in Subgroup'Range loop
-               declare
-                  Shifted : constant Group_Element := (X + Subgroup(I)) mod N;
-               begin
-                  if Oracle(Shifted) /= Base_Val then
-                     return False;
-                  end if;
-               end;
-            end loop;
          end;
+         pragma Warnings (Off, "condition can only be False");
+         for I in Subgroup'Range loop
+            declare
+               Shifted : constant Group_Element := (X + Subgroup(I)) mod N;
+            begin
+               if Oracle(Shifted) /= Oracle(X) then
+                  return False;
+               end if;
+            end;
+         end loop;
+         pragma Warnings (On, "condition can only be False");
       end loop;
 
       return True;
@@ -269,8 +270,8 @@ package body Hidden_Subgroup_Problem is
    end Period_Oracle_Sample_4;
 
    function Constant_Oracle (X : Group_Element) return Group_Element is
-      pragma Unreferenced (X);
    begin
+      pragma Unreferenced (X);
       return 42;
    end Constant_Oracle;
 
