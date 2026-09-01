@@ -26,7 +26,9 @@ begin
    begin
       Check ("1.1 Simon solver returns non-zero", S > 0);
       Check ("1.2 Simon solver detects correct hidden string 3", S = 3);
+      pragma Warnings (Off, "upper bound test optimized away");
       Check ("1.3 Simon solver result is within 8-bit range", S in 1 .. 255);
+      pragma Warnings (On, "upper bound test optimized away");
    end;
 
    -- TEST 2 — Simon's Problem Solver (s = 5)
@@ -46,7 +48,9 @@ begin
    begin
       Check ("3.1 Period is positive", P > 0);
       Check ("3.2 Period equals 3", P = 3);
+      pragma Warnings (Off, "-gnatwc");
       Check ("3.3 Period divides group size 9", 9 mod Group_Element(P) = 0);
+      pragma Warnings (On, "-gnatwc");
    end;
 
    -- TEST 4 — Period Finding (Period 4 in Z_12)
@@ -56,7 +60,9 @@ begin
    begin
       Check ("4.1 Period is positive for Z_12", P > 0);
       Check ("4.2 Period equals 4", P = 4);
+      pragma Warnings (Off, "-gnatwc");
       Check ("4.3 Period divides group size 12", 12 mod Group_Element(P) = 0);
+      pragma Warnings (On, "-gnatwc");
    end;
 
    -- TEST 5 — General Abelian HSP (Period 3 in Z_9)
