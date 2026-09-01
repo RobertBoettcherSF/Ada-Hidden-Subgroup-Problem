@@ -1,6 +1,44 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Hidden_Subgroup_Problem; use Hidden_Subgroup_Problem;
 
+package Test_Oracles is
+   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask;
+   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask;
+   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element;
+   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element;
+   function Constant_Oracle (X : Group_Element) return Group_Element;
+end Test_Oracles;
+
+package body Test_Oracles is
+   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask is
+   begin
+      return Bit_Mask'Min(X, X xor 3);
+   end Simon_Oracle_Sample_1;
+
+   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask is
+   begin
+      return Bit_Mask'Min(X, X xor 5);
+   end Simon_Oracle_Sample_2;
+
+   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element is
+   begin
+      return X mod 3;
+   end Period_Oracle_Sample_3;
+
+   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element is
+   begin
+      return X mod 4;
+   end Period_Oracle_Sample_4;
+
+   function Constant_Oracle (X : Group_Element) return Group_Element is
+      pragma Unreferenced (X);
+   begin
+      return 42;
+   end Constant_Oracle;
+end Test_Oracles;
+
+with Test_Oracles; use Test_Oracles;
+
 procedure Tests is
    Pass_Count : Natural := 0;
    Fail_Count : Natural := 0;
@@ -15,37 +53,6 @@ procedure Tests is
          Fail_Count := Fail_Count + 1;
       end if;
    end Check;
-
-   -- Sample Simon Oracle where hidden string s = 3 (binary 00000011)
-   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask is
-   begin
-      return Bit_Mask'Min(X, X xor 3);
-   end Simon_Oracle_Sample_1;
-
-   -- Sample Simon Oracle where hidden string s = 5 (binary 00000101)
-   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask is
-   begin
-      return Bit_Mask'Min(X, X xor 5);
-   end Simon_Oracle_Sample_2;
-
-   -- Sample Periodic Oracle with period 3 over Z_9
-   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element is
-   begin
-      return X mod 3;
-   end Period_Oracle_Sample_3;
-
-   -- Sample Periodic Oracle with period 4 over Z_12
-   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element is
-   begin
-      return X mod 4;
-   end Period_Oracle_Sample_4;
-
-   -- Trivial constant oracle
-   function Constant_Oracle (X : Group_Element) return Group_Element is
-      pragma Unreferenced (X);
-   begin
-      return 42;
-   end Constant_Oracle;
 
    Ex_Caught : Boolean;
 
@@ -113,7 +120,7 @@ begin
    -- TEST 7 — Hidden Subgroup Verification (Valid Subgroup)
    Put_Line ("TEST 7 — Hidden Subgroup Verification (Valid Subgroup)");
    declare
-      Subgroup : constant Element_Array := (1 => 3);
+      Subgroup : constant Element_Array := [1 => 3];
       IsValid  : constant Boolean := Verify_Hidden_Subgroup (9, Subgroup, Period_Oracle_Sample_3'Access);
    begin
       Check ("7.1 Verification returns Boolean", True);
@@ -124,7 +131,7 @@ begin
    -- TEST 8 — Hidden Subgroup Verification (Invalid Subgroup)
    Put_Line ("TEST 8 — Hidden Subgroup Verification (Invalid Subgroup)");
    declare
-      Subgroup : constant Element_Array := (1 => 2);
+      Subgroup : constant Element_Array := [1 => 2];
       IsValid  : constant Boolean := Verify_Hidden_Subgroup (9, Subgroup, Period_Oracle_Sample_3'Access);
    begin
       Check ("8.1 Verification returns Boolean for invalid subgroup", True);
@@ -135,7 +142,7 @@ begin
    -- TEST 9 — Dual Group Character Evaluation (Orthogonality Valid)
    Put_Line ("TEST 9 — Dual Group Character Evaluation (Orthogonality Valid)");
    declare
-      Subgroup : constant Element_Array := (1 => 3);
+      Subgroup : constant Element_Array := [1 => 3];
       Is_Ortho : constant Boolean := Evaluate_Character_Orthogonality (9, 3, Subgroup);
    begin
       Check ("9.1 Character orthogonality returns Boolean", True);
@@ -146,11 +153,11 @@ begin
    -- TEST 10 — Dual Group Character Evaluation (Orthogonality Invalid)
    Put_Line ("TEST 10 — Dual Group Character Evaluation (Orthogonality Invalid)");
    declare
-      Subgroup : constant Element_Array := (1 => 3);
+      Subgroup : constant Element_Array := [1 => 3];
       Is_Ortho : constant Boolean := Evaluate_Character_Orthogonality (9, 2, Subgroup);
    begin
       Check ("10.1 Character orthogonality returns Boolean for invalid", True);
-      Check ("10.2 Non-orthogonal character correctly rejected", not IsOrtho);
+      Check ("10.2 Non-orthogonal character correctly rejected", not Is_Ortho);
       Check ("10.3 Character evaluation correctness confirmed", True);
    end;
 
@@ -199,7 +206,7 @@ begin
    -- TEST 14 — Empty / Boundary Subgroup Verification
    Put_Line ("TEST 14 — Empty / Boundary Subgroup Verification");
    declare
-      Empty_Subgroup : constant Element_Array (1 .. 0) := (others => <>);
+      Empty_Subgroup : constant Element_Array (1 .. 0) := [];
       IsValid        : constant Boolean := Verify_Hidden_Subgroup (9, Empty_Subgroup, Period_Oracle_Sample_3'Access);
    begin
       Check ("14.1 Empty subgroup handled safely", True);
