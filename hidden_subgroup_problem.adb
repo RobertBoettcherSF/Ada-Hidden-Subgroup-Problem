@@ -100,13 +100,13 @@ package body Hidden_Subgroup_Problem is
       end Gaussian_Elimination;
 
    begin
-      -- Check direct collisions with zero
+      -- Check direct collisions with zero (loop starts at 1, so I > 0 always)
       for I in 1 .. Bit_Mask(2 ** N_Bits - 1) loop
          declare
             Y1 : constant Bit_Mask := Oracle(I);
             Y2 : constant Bit_Mask := Oracle(0);
          begin
-            if Y1 = Y2 and then I /= 0 then
+            if Y1 = Y2 then
                return I;
             end if;
          end;
@@ -136,7 +136,7 @@ package body Hidden_Subgroup_Problem is
          begin
             return Gaussian_Elimination(Sub_Slice, N_Bits);
          end;
-      end if;
+      end loop;
 
       raise Subgroup_Not_Found;
    end Solve_Simons_Problem;
@@ -148,6 +148,22 @@ package body Hidden_Subgroup_Problem is
      (N       : Group_Element;
       Oracle : Oracle_Function) return Period_Type is
    begin
+      -- Check if oracle is constant (trivial/degenerate)
+      declare
+         Base_Val     : constant Group_Element := Oracle(0);
+         All_Constant : Boolean := True;
+      begin
+         for X in 1 .. Group_Element(N - 1) loop
+            if Oracle(X) /= Base_Val then
+               All_Constant := False;
+               exit;
+            end if;
+         end loop;
+         if All_Constant then
+            raise Invalid_Oracle;
+         end if;
+      end;
+
       for R in 1 .. Period_Type(N - 1) loop
          declare
             Is_Periodic : Boolean := True;
@@ -171,7 +187,7 @@ package body Hidden_Subgroup_Problem is
 
       raise Subgroup_Not_Found;
    exception
-      when Subgroup_Not_Found =>
+      when Subgroup_Not_Found | Invalid_Oracle =>
          raise;
       when others =>
          raise Invalid_Oracle;
@@ -195,7 +211,7 @@ package body Hidden_Subgroup_Problem is
 
       Gen := N / Group_Element(Period);
 
-      return Result : Element_Array := [1 => Gen];
+      return [1 => Gen];
    end Solve_Abelian_HSP;
 
    ---------------------------------------------------------------------------
