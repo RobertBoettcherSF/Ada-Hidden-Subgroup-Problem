@@ -9,7 +9,7 @@ package Hidden_Subgroup_Problem is
 
    -- Domain types and constraints
    type Group_Element is range 0 .. 65535;
-   type Bit_Mask is range 0 .. 255; -- For Simon's problem up to 8 bits
+   type Bit_Mask is mod 256; -- Modular type for bitwise operations in Simon's problem
    type Period_Type is range 1 .. 65535;
 
    -- Array types for group elements, vectors, and subgroups
