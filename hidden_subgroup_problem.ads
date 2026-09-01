@@ -34,7 +34,7 @@ package Hidden_Subgroup_Problem is
      (N_Bits : Positive;
       Oracle : Simon_Oracle_Function) return Bit_Mask
      with Pre  => N_Bits in 1 .. 8 and then Oracle /= null,
-          Post => True;
+          Post => Solve_Simons_Problem'Result > 0;
 
    ---------------------------------------------------------------------------
    -- Variant 2: Period Finding (Order Finding)
