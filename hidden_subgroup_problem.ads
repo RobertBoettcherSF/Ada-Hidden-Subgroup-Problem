@@ -80,4 +80,13 @@ package Hidden_Subgroup_Problem is
      (A, B : Group_Element) return Group_Element
      with Post => Greatest_Common_Divisor'Result > 0 or else (A = 0 and B = 0 and Greatest_Common_Divisor'Result = 0);
 
+   ---------------------------------------------------------------------------
+   -- Test Oracles (Library-level for test suite access)
+   ---------------------------------------------------------------------------
+   function Simon_Oracle_Sample_1 (X : Bit_Mask) return Bit_Mask;
+   function Simon_Oracle_Sample_2 (X : Bit_Mask) return Bit_Mask;
+   function Period_Oracle_Sample_3 (X : Group_Element) return Group_Element;
+   function Period_Oracle_Sample_4 (X : Group_Element) return Group_Element;
+   function Constant_Oracle (X : Group_Element) return Group_Element;
+
 end Hidden_Subgroup_Problem;
