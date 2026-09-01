@@ -65,7 +65,7 @@ package body Hidden_Subgroup_Problem is
          end if;
 
          -- Forward elimination
-         for Col_Idx in reverse 0 .. Bits - 1 is
+         for Col_Idx in reverse 0 .. Bits - 1 loop
             Mask := Bit_Mask(2 ** Col_Idx);
             for Row_Idx in 1 .. M_Len loop
                if (Matrix(Row_Idx) and Mask) /= 0 then
